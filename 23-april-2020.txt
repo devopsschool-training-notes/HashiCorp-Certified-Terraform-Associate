@@ -1,0 +1,245 @@
+Terraform workspace explained!!!
+=======================================
+- DEV
+	ONE TF PROJECT CONFIG -- STATE
+- QA
+	ONE TF PROJECT CONFIG -- STATE
+- PROD
+	ONE TF PROJECT CONFIG -- STATE
+
+https://www.devopsschool.com/blog/terraform-workspace-explained/
+
+
+How to do Looping/Iterations in Terraform?
+================================================
+https://www.devopsschool.com/blog/how-to-do-looping-iterations-in-terraform/
+
+COUNT
+===========
+provider "github" {
+  token        = ""
+  organization = "devopsschool-demo-temporary"
+}
+
+
+variable "repo-name" {
+   type = "map"
+  default = {
+      "repo1" = "devops1"
+      "repo2" = "devops2"
+      "repo3" = "devops3"
+}
+}
+
+resource "github_repository" "repogithub" {
+  for_each = var.repo-name
+  name = "${each.value}-devopsschool"
+}
+
+
+How to do Conditioning in Terraform?
+=========================================
+variable "lambda_type" {
+  type    = "string"
+  default = "java"
+}
+
+https://dev.to/tbetous/how-to-make-conditionnal-resources-in-terraform-440n
+========================================
+resou
+	count = 0 
+res	
+	count =1 2 
+
+
+Terraform conditioning example program
+
+
+provider "github" {
+  token        = ""
+  organization = "devopsschool-demo-temporary"
+}
+
+variable "github-condition" {
+  type    = "string"
+  default = "java"
+}
+
+
+resource "github_repository" "example" {
+  name        = var.github-condition
+  description = "My awesome codebase"
+
+  private = false
+  count            = "${var.github-condition == "java" ? 1 : 0}"
+
+}
+
+=========
+13.233.254.61
+===============
+
+
+
+
+How to destroy one specific resource from TF file in Terraform?
+https://www.devopsschool.com/blog/how-to-destroy-one-specific-resource-from-tf-file-in-terraform/
+
+
+Terraform Implicit 
+===================
+	set by providers and plugins
+
+
+subnet - 2
+vpc  - 1
+igw - 3
+
+resource1 
+
+resource2
+
+
+Explicit Dependencies
+=========================
+resource1 
+	dependson  resource2
+
+resource2
+=========================
+
+
+taint and untaint
+=========================
+Scan1
+=======================
+resource1
+
+resource2		SET this as taint.
+	provinors
+
+resource3
+
+Scan2
+=================
+terraform taint 
+terafrom untaint
+https://www.devopsschool.com/blog/terraform-taint-and-untaint-explained-with-example-programs-and-tutorials/
+
+
+
+
+
+provider "github" {
+  token        = "f9e279e6c1a2e8e00c8bf55b46a94d3f88124349"
+  organization = "devopsschool-demo-temporary"
+}
+
+resource "github_repository" "example1" {
+  name        = "taint1"
+  description = "My awesome codebase"
+  private = false
+}
+
+resource "github_repository" "example2" {
+  name        = "taint2"
+  description = "My awesome codebase"
+  private = false
+}
+
+
+output
+https://www.devopsschool.com/blog/how-to-use-one-modules-variable-in-another-module-in-terraform/
+
+
+maps
+https://www.devopsschool.com/blog/terraform-variable-map-type-explained/
+
+Resources vs DATA
+
+
+lookups
+functions
+==========================
+https://www.terraform.io/docs/configuration/functions.html
+
+
+
+
+null resource 
+=============================
+Provisionar
+=================
+https://www.devopsschool.com/blog/how-to-run-provisioners-code-after-resources-is-created-in-terraform/
+
+
+
+
+
+
+local-exec
+=========================
+Provisionars
+	file
+	local-exec
+https://www.devopsschool.com/blog/understanding-local-exec-provisioner-in-terraform/
+	remote-exec
+	chef
+	puppet
+
+
+
+
+
+
+random id
+
+
+data
+https://www.devopsschool.com/blog/data-sources-in-terraform-resources-explained-with-example/
+
+template files(templatefile)
+================================
+
+
+troubleshooting
+plugins
+
+
+data "aws_availability_zones" "az" {
+}
+
+resource "aws_subnet" "vault-subnet" {
+  count                   = var.create ? length(var.vpc_cidr_vault) : 0
+  vpc_id                  = aws_vpc.vault-vpc.id
+  availability_zone       = element(data.aws_availability_zones.az.names, count.index)
+  cidr_block              = element(var.vpc_cidr_vault, count.index)
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name" = format("%s-%s-vault-subnet-%d", var.name, var.environment, count.index + 1)
+  }
+}
+
+
+-------------------------------
+resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
+  vpc_id     = "${aws_vpc.main.id}"
+  cidr_block = "172.2.0.0/16"
+}
+
+resource "aws_subnet" "in_secondary_cidr" {
+  vpc_id     = "${aws_vpc_ipv4_cidr_block_association.secondary_cidr.vpc_id}"
+  cidr_block = "172.2.0.0/24"
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+}
+
+
+
+
+
+interpolation
+============================
